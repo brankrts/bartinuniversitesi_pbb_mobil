@@ -1,0 +1,533 @@
+
+
+{
+    "pbbapi" : {
+        "Karar_Modulu" : {
+            "title": "Kararlar Modülü",
+            
+            "subs" : {
+                "baseUrl" : "https://form.bartin.edu.tr/rapor/personel/kararlar.html?kararanabaslik__e={category_id}&json=1",
+
+                "1" : {
+                    "title" : "ANAYASA MAHKEMESİ KARARLARI",
+                    "url" : "1"
+                },
+                "2" : {
+                    "title" : "DANIŞTAY İÇTİHADI BİRLEŞTİRME KURULU KARARLARI",
+                    "url" : "2"
+
+                },
+                "3" : {
+                    "title" : "UYUŞMAZLIK MAHKEMESİ KARARLARI",
+                    "url" : "3"
+
+                },
+                "4" : {
+                    "title" : "DANIŞTAY DAVA DAİRELERİNİN KARARLARI",
+                    "url" : "4"
+                },
+                "5" : {
+                    "title" : "İSTİNAF MAHKEMESİ KARARLARI",
+                    "url" : "5"
+                },
+                "6" : {
+                    "title" : "BÖLGE İDARE MAHKEME KARARLARI",
+                    "url" : "6"
+                }
+
+            }
+        },
+        "Yok_Uygulamalari_modulu" : {
+            "title" : "YÖK Uygulamaları Modülü",
+            "subs" : {
+                "baseUrl" : "https://form.bartin.edu.tr/rapor/personel/yok-uygulamalari.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title"  : "1416 SAYILI KANUNA TABİ UYGULAMALAR",
+                    "url" : "1"
+                },
+                "2" : {
+                    "title" : "2547 SAYILI KANUNUN 33 ÜNCÜ MADDESİ UYARINCA ARAŞTIRMA GÖREVLİLERİNİN YURTDIŞINDA LİSANSÜSTÜ EĞİTİM",
+                    "url" : "2"
+                    
+                },
+                "3" : {
+                    "title" : "2547 SAYILI KANUNUN 35 İNCİ MADDESİ UYARINCA GÖREVLENDİRMELER",
+                    "url" : "3"
+                    
+                },
+                "4" : {
+                    "title" : "2547 SAYILI KANUNUN 36 NCI MADDESİ",
+                    "url" : "4"
+                    
+                },
+                "5" : {
+                    "title" : "2547 SAYILI KANUNUN 38 İNCİ MADDESİ",
+                    "url" : "5"
+                    
+                },
+                "6" : {
+                    "title" : "2547 SAYILI KANUNUN 39 UNCU MADDESİ",
+                    "url" : "6"
+                    
+                },
+                "7" : {
+                    "title" : "2547 SAYILI KANUNUN 40/B ve 40/D MADDESİ",
+                    "url" : "7"
+                    
+                },
+                "8" : {
+                    "title" : "2547 SAYILI KANUNUN 41 İNCİ MADDESİ",
+                    "url" : "8"
+                    
+                },
+                "9" : {
+                    "title" : "2547 SAYILI KANUNUN 50/D MADDESİ",
+                    "url" : "9"
+                    
+                },
+                "10" : {
+                    "title" : "AKADEMİK KADROLARIN UYGULAMALARI",
+                    "url" : "10"
+                    
+                },
+                "11" : {
+                    "title" : "ALES PUANININ UYGULAMALARI",
+                    "url" : "11"
+                    
+                },
+                "12" : {
+                    "title" : "ASKERLİK TEHİR İŞLEMLERİ",
+                    "url" : "12"
+                    
+                },
+                "13" : {
+                    "title" : "UNVAN VE EŞDEĞERLİKLER",
+                    "url" : "13"
+                    
+                },
+                "14" : {
+                    "title" : "DEKAN ATAMA TEKLİFLERİ",
+                    "url" : "14"
+                    
+                },
+                "15" : {
+                    "title" : "DİSİPLİN İŞLEMLERİ",
+                    "url" : "15"
+                    
+                },
+                "16" : {
+                    "title" : "DOÇENTLİK KADROSUNA ATANMA",
+                    "url" : "16"
+                    
+                },
+                "17" : {
+                    "title" : "YAŞ HADLERİ VE 60-B",
+                    "url" : "17"
+                    
+                },
+                "18" : {
+                    "title" : "İDARİ KONULAR VE GÖREVDE YÜKSELME SINAVLARI",
+                    "url" : "18"
+                    
+                },
+                "19" : {
+                    "title" : "ÖĞRETİM ÜYESİ DIŞINDAKİ ÖĞRETİM ELEMANI KADROLARINA ATAMALAR",
+                    "url" : "19"
+                    
+                },
+                "20" : {
+                    "title" : "ÖĞRETİM ÜYESİ KADROLARINA ATAMALAR",
+                    "url" : "20"
+                    
+                },
+                "21" : {
+                    "title" : "ÖĞRETİM ÜYESİ YETİŞTİRME PROGRAMI (ÖYP)",
+                    "url" : "21"
+                    
+                },
+                "22" : {
+                    "title" : "FAKÜLTE KURULLARI-FAKÜLTE YÖNETİM KURULLARI",
+                    "url" : "22"
+                    
+                },
+                "23" : {
+                    "title" : "YABANCI DİL SINAVLARI",
+                    "url" : "23"
+                    
+                },
+                "24" : {
+                    "title" : "YABANCI UYRUKLU PERSONEL ÇALIŞTIRILMASI",
+                    "url" : "24"
+                    
+                },
+                "25" : {
+                    "title" : "NORM KADRO İŞLEMLERİ",
+                    "url" : "25"
+                    
+                },
+                "26" : {
+                    "title" : "PROGRAM AÇMA VE DİĞER EĞİTİM ÖĞRETİM",
+                    "url" : "26"
+                    
+                },
+                "27" : {
+                    "title" : "DİĞER",
+                    "url" : "27"
+                    
+                }
+                
+                
+
+
+            }
+        },
+        "DPB_Uygulamalari_Modulur" : {
+
+            "title" : "DPB Uygulamaları Modülü",
+            "subs" : {
+                "basUrl" : "https://form.bartin.edu.tr/rapor/personel/dpb-uygulamalari.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title" : "ADAYLIK",
+                    "url" : "1"
+                },
+                "2" : {
+                    "title" : "AKADEMİK PERSONEL",
+                    "url" : "2"
+                },
+                "3" : {
+                    "title" : "ASKERLİK",
+                    "url" : "3"
+                },
+                "4" : {
+                    "title" : "ATANMA",
+                    "url" : "4"
+                },
+                "5" : {
+                    "title" : "BEKLEME SÜRESİ",
+                    "url" : "5"
+                },
+                "6" : {
+                    "title" : "BAŞKA İŞ VE TİCARET YASAĞI",
+                    "url" : "6"
+                },
+                "7" : {
+                    "title" : "ÇALIŞMA SAATLERİ VE FAZLA ÇALIŞMA YASAĞIGEÇİCİ GÖREVLENDİRME",
+                    "url" : "7"
+                },
+                "8" : {
+                    "title" : "ÇEKİLME",
+                    "url" : "8"
+                },
+                "9" : {
+                    "title" : "DERS GÖREVİ",
+                    "url" : "9"
+                },
+                "10" : {
+                    "title" : "DİSİPLİN",
+                    "url" : "10"
+                },
+                "11" : {
+                    "title" : "EMEKLİLERİN YENİDEN İSTİHDAMI",
+                    "url" : "11"
+                },
+                "12" : {
+                    "title" : "GEÇİCİ GÖREVLENDİRME",
+                    "url" : "12"
+                },
+                "13" : {
+                    "title" : "GÖREVDEN UZAKLAŞTIRMA",
+                    "url" : "13"
+                },
+                "14" : {
+                    "title" : "HAKLAR VE YASAKLAR",
+                    "url" : "14"
+                },
+                "15" : {
+                    "title" : "İKİNCİ GÖREV",
+                    "url" : "15"
+                },
+                "16" : {
+                    "title" : "BİR DERECE İLERLEMESİ",
+                    "url" : "16"
+                },
+                "17" : {
+                    "title" : "8 YILA BİR KADEME İLERLEMESİ",
+                    "url" : "17"
+                },
+                "18" : {
+                    "title" : "HİZMET DEĞERLENDİRİLMESİ",
+                    "url" : "18"
+                },
+                "19" : {
+                    "title" : "HİZMET SINIFI DEĞİŞİKLİĞİ İNTİBAKI",
+                    "url" : "19"
+                },
+                "21" : {
+                    "title" : "KARİYER MESLEKLERDE GÖREV YAPAN MEMURLARA BİR DERECE VERİLMESİ",
+                    "url" : "21"
+                },
+                "22" : {
+                    "title" : "ÜST DERECELİ KADROLARA ATANMA (68-B)",
+                    "url" : "22"
+                },
+                "23" : {
+                    "title" : "ÜST ÖĞRENİM İNTİBAKI",
+                    "url" : "23"
+                },
+                "24" : {
+                    "title" : "İSTİSNAİ MEMURİYET",
+                    "url" : "24"
+                },
+                "25" : {
+                    "title" : "ANALIK İZNİ",
+                    "url" : "25"
+                },
+                "26" : {
+                    "title" : "AYLIKSIZ İZİN",
+                    "url" : "26"
+                },
+                "27" : {
+                    "title" : "HASTALIK İZNİ",
+                    "url" : "27"
+                },
+                "28" : {
+                    "title" : "REFAKAT İZNİ",
+                    "url" : "28"
+                },
+                "29" : {
+                    "title" : "MAZERET İZNİ",
+                    "url" : "29"
+                },
+                "30" : {
+                    "title" : "SÜT İZNİ",
+                    "url" : "30"
+                },
+                "31" : {
+                    "title" : "SAĞLIK İZNİ",
+                    "url" : "31"
+                },
+                "32" : {
+                    "title" : "ENGELLİ YAKINI BULUNANLARIN İZİN HAKKI",
+                    "url" : "32"
+                },
+                "33" : {
+                    "title" : "DİĞER İZİNLER",
+                    "url" : "33"
+                },
+                "34" : {
+                    "title" : "ZORUNLU YER DEĞİŞTİRME SEBEBİYLE VERİLEN İZİN",
+                    "url" : "34"
+                },
+                "35" : {
+                    "title" : "VEKİL MEMURUN İZİN HAKLARI",
+                    "url" : "35"
+                },
+                "36" : {
+                    "title" : "YARIM GÜN İZİN",
+                    "url" : "36"
+                },
+                "37" : {
+                    "title" : "YILLIK İZNE ESAS HİZMET SÜRESİ",
+                    "url" : "37"
+                },
+                "38" : {
+                    "title" : "YILLIK İZİN GENEL ESASLAR",
+                    "url" : "38"
+                },
+                "39" : {
+                    "title" : "KARİYER MESLEK",
+                    "url" : "39"
+                },
+                "40" : {
+                    "title" : "KURUMLARARASI GEÇİŞ (NAKLEN ATANMA",
+                    "url" : "40"
+                },
+                "41" : {
+                    "title" : "EK GÖSTERGE",
+                    "url" : "41"
+                },
+                "42" : {
+                    "title" : "ZAM VE TAZMİNAT",
+                    "url" : "42"
+                },
+                "43" : {
+                    "title" : "MECBURİ HİZMET",
+                    "url" : "43"
+                },
+                "44" : {
+                    "title" : "MEHİL MÜDDETİ",
+                    "url" : "44"
+                },
+                "45" : {
+                    "title" : "MEMURİYETE GİRİŞTE GENEL VE ÖZEL ŞARTLAR",
+                    "url" : "45"
+                },
+                "46" : {
+                    "title" : "SOSYAL HAKLAR",
+                    "url" : "46"
+                },
+                "47" : {
+                    "title" : "SÖZLEŞMELİ PERSONEL (399)",
+                    "url" : "47"
+                },
+                "48" : {
+                    "title" : "SÖZLEŞMELİ PERSONEL (4-B)",
+                    "url" : "48"
+                },
+                "49" : {
+                    "title" : "VEKALETEN ATAMA VE ÖDENECEK MALİ HAKLAR",
+                    "url" : "49"
+                },
+                "50" : {
+                    "title" : "YENİDEN ATANMA (İSTİFA SONRASI DÖNÜŞ)",
+                    "url" : "50"
+                },
+                "51" : {
+                    "title" : "YER DEĞİŞTİRME SURETİYLE ATANMA",
+                    "url" : "51"
+                },
+                "52" : {
+                    "title" : "YÖNETİCİLERİN GÖREVDEN ALINMASI (375 SAYILI KHK EK 18 İNCİ MADDE)",
+                    "url" : "52"
+                },
+                "53" : {
+                    "title" : "SENDİKA",
+                    "url" : "53"
+                }
+                
+
+                
+            }
+        
+        },
+        "Mali_Uygulamalar_Modulu" : {
+            "title" : "Mali Uygulamalar Modülü",
+            "subs" : {
+                "basUrl" : "https://form.bartin.edu.tr/rapor/personel/mali-uygulamalar.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title" : "SAYIŞTAY BAŞKANLIĞI DAİRE KARARLARI",
+                    "url" : "1"
+                },
+                "2" : {
+                        "title" : "SAYIŞTAY BAŞKANLIĞI TEMYİZ KURULU KARARLARI",
+                        "url" : "2"
+                    },
+                "3" : {
+                        "title" : "HAZİNE VE MALİYE BAKANLIĞININ GÖRÜŞLERİ",
+                        "url" : "3"
+                    },
+                "4" : {
+                        "title" : "STRATEJİ VE BÜTÇE BAŞKANLIĞININ GÖRÜŞLERİ",
+                        "url" : "4"
+                    }
+
+            }
+            
+        },
+        "Tamimler_Modulu" : {
+            "title" : "Tamimler Modülü",
+            "subs": {
+                "baseUrl" : "https://form.bartin.edu.tr/rapor/personel/tamimler.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title" : "ATAMA İŞLEMLERİ",
+                    "url" : "1"
+                },
+                "2" : {
+                    "title" : "JÜRİ İŞLEMLERİ",
+                    "url" : "2"
+                },
+                "3" : {
+                    "title" : "İZİNLER",
+                    "url" : "3"
+                },
+                "4" : {
+                    "title" : "GÖREVLENDİRME",
+                    "url" : "4"
+                },
+                "5" : {
+                    "title" : "KADROLAR",
+                    "url" : "5"
+                },
+                "6" : {
+                    "title" : "DİSİPLİN",
+                    "url" : "6"
+                },
+                "7" : {
+                    "title" : "ÜBYS",
+                    "url" : "7"
+                },
+                "8" : {
+                    "title" : "ÖZLÜK İŞLEMLERİ",
+                    "url" : "8"
+                },
+                "9" : {
+                    "title" : "SENDİKA",
+                    "url" : "9"
+                },
+                "10" : {
+                    "title" : "EMEKLİLİK",
+                    "url" : "10"
+                },
+                "11" : {
+                    "title" : "COVID-19",
+                    "url" : "11"
+                },
+                "12" : {
+                    "title" : "DİĞER AKADEMİK KONULAR",
+                    "url" : "12"
+                },
+                "13" : {
+                    "title" : "DİĞER İDARİ KONULAR",
+                    "url" : "13"
+                }
+
+            }
+        },
+        "Karsilastirma_Cetvelleri" : {
+            "title" : "Karşılaştırma Cetvelleri",
+            "subs": {
+                "baseUrl" : "https://form.bartin.edu.tr/rapor/personel/karsilastirma-cetvelleri.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title" : "KANUNLAR",
+                    "url" : "1"
+                },
+                "2" : {
+                    "title" : "TOPLU SÖZLEŞMELER",
+                    "url" : "2"
+                },
+                "3" : {
+                    "title" : "CUMHURBAŞKANLIĞI KARARNAMELERİ",
+                    "url" : "3"
+                },
+                "4" : {
+                    "title" : "CUMHURBAŞKANLIĞI KARARLARI",
+                    "url" : "4"
+                },
+                "5" : {
+                    "title" : "YÖNETMELİKLER",
+                    "url" : "5"
+                },
+                "6" : {
+                    "title" : "CUMHURBAŞKANLIĞI GENELGELERİ",
+                    "url" : "6"
+                },
+                "7" : {
+                    "title" : "USULLER VE ESASLAR",
+                    "url" : "7"
+                }
+            }
+        },
+        "Mevzuat_hazirlama" : {
+            "title" : "Mevzuat Hazırlama",
+            "subs": {
+                "baseUrl" : "https://form.bartin.edu.tr/rapor/personel/mevzuat-hazirlama.html?kararanabaslik__e={category_id}&json=1",
+                "1" : {
+                    "title" : "MEVZUAT HAZIRLAMA",
+                    "url" : "1"
+                }
+            }
+        }
+
+    }
+
+}
