@@ -38,7 +38,6 @@ Future<dynamic> searchWithResponse(String module, String search) async {
 
   if (response.data['raporverileri'] is List) {
     if (response.data['raporverileri'].isNotEmpty) {
-     
       return response.data;
     }
   }
@@ -67,7 +66,7 @@ Future<BaseModel?> searchAllData(String search) async {
       }
     }
     var model = BaseModel.fromJson(response);
-    print(response['raporverileri'].length);
+
     return model;
   }
   return null;

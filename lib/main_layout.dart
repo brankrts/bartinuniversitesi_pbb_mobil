@@ -37,8 +37,7 @@ class _MainLayoutState extends State<MainLayout> {
   bool _isFocused = false;
   bool _isSearchFocused = false;
   bool isMainPage = true;
-  double? _progress;
-  String _status = "";
+
   bool isDownloading = false;
   File? file;
 
@@ -58,14 +57,19 @@ class _MainLayoutState extends State<MainLayout> {
       TextEditingController();
   final TextEditingController searchTextEditingController =
       TextEditingController();
+  final TextEditingController mainPageSearchController =
+      TextEditingController();
+
   final _focusNode = FocusNode();
   final searchFocusNode = FocusNode();
+  final mainPageSearchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChange);
     searchFocusNode.addListener(_onSearchFocusChange);
+    mainPageSearchFocusNode.addListener(_onMainPageSearchFocusChange);
   }
 
   @override
@@ -73,10 +77,13 @@ class _MainLayoutState extends State<MainLayout> {
     textEditingController.dispose();
     generalSearchEditingController.dispose();
     searchTextEditingController.dispose();
+    mainPageSearchController.dispose();
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     searchFocusNode.removeListener(_onSearchFocusChange);
     searchFocusNode.dispose();
+    mainPageSearchFocusNode.removeListener(_onMainPageSearchFocusChange);
+    mainPageSearchFocusNode.dispose();
     super.dispose();
   }
 
@@ -91,6 +98,12 @@ class _MainLayoutState extends State<MainLayout> {
         );
       },
     );
+  }
+
+  void _onMainPageSearchFocusChange() {
+    setState(() {
+      _isFocused = _focusNode.hasFocus;
+    });
   }
 
   void _onFocusChange() {
@@ -210,14 +223,14 @@ class _MainLayoutState extends State<MainLayout> {
                       if (generalSearchEditingController.text.isNotEmpty) {
                         setState(() {
                           isLoading = true;
+                          _focusNode.unfocus();
                         });
                         var searchModel = await searchAllData(
                             generalSearchEditingController.text);
                         setState(() {
-                          this.model = searchModel;
+                          model = searchModel;
                           isLoading = false;
                           generalSearchEditingController.clear();
-                          _focusNode.unfocus();
                         });
                       }
                     },
@@ -250,48 +263,202 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   SingleChildScrollView BuildMainPage(BuildContext context) {
-    String author = "Turgay DELİALİOĞLU\n\nPersonel Daire Başkanı";
     return SingleChildScrollView(
       physics: const ScrollPhysics(),
+      child: Column(children: [
+        Image.asset('assets/images/logo.jpg'),
+        mainPageMenuItems(context),
+        mainPageSearchBar(),
+        isLoading
+            ? const CircularProgressIndicator()
+            : model?.raporverileri?.isNotEmpty == true
+                ? (ListView.builder(
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: model?.raporverileri?.length ?? 0,
+                    itemBuilder: (BuildContext context, int i) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: CustomCard(
+                            header:
+                                model?.raporverileri![i].kararanabaslik?.veri,
+                            pdfLink: model
+                                    ?.raporverileri![i].karardosya?.veri ??
+                                model?.raporverileri![i].karardosyayolu?.veri,
+                            title: model?.raporverileri![i].kararbaslik?.veri,
+                            date: model?.raporverileri![i].karartarih?.veri),
+                      );
+                    }))
+                : Text("Gosterilecek kayit bulunamadi"),
+      ]),
+    );
+  }
+
+  SizedBox mainPageSearchBar() {
+    return SizedBox(
+      width: double.infinity,
+      height: kToolbarHeight * 2,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/images/logo.jpg'),
-          InformationCard(
-              title: "Kararlar Modülü",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından hazırlanan Kararlar Modülünde; Anayasa Mahkemesi, Uyuşmazlık Mahkemesi, Danıştay ve diğer İdari Yargı Kararlarını bulabilirsiniz.\n\nSayfamıza katkı vermek amacıyla elinizde bulunan kararları bizimle paylaşabilirsiniz\n\nDestekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "YÖK Uygulamaları Modülü",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından hazırlanan YÖK Uygulamaları modülünde; Yükseköğretim Kurulu Başkanlığı tarafından alınan güncel karar ve görüşleri bulabilirsiniz.\n\nSayfamıza katkı vermek amacıyla elinizde bulunan görüş ve kararları bizimle paylaşabilirsiniz.\n\nDestekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "DPB Uygulamaları Modülü",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından hazırlanan DPB Uygulamaları Modülünde; mülga Devlet Personel Başkanlığı tarafından önceki yıllarda verilen güncel karar ve görüşleri bulabilirsiniz.\n\nSayfamıza katkı vermek amacıyla elinizde bulunan görüş ve kararları bizimle paylaşabilirsiniz.\n\nDestekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "Mali Uygulamalar Modülü",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından hazırlanan Mali Uygulamaları Modülünde; Sayıştay Başkanlığı tarafından verilen Daire ve Temyiz Kurulu Kararları ile Hazine ve Maliye Bakanlığı ile Strateji ve Bütçe Başkanlığı tarafından verilen güncel karar ve görüşleri bulabilirsiniz.\n\nSayfamıza katkı vermek amacıyla elinizde bulunan görüş ve kararları bizimle paylaşabilirsiniz.\n\nDestekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "Tamimler Modülü",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından birimimizin kuruluş sürecinden itibaren kurum içi uygulamalara yönelik yapılan tamimlere ulaşabilirsiniz.\n\nİlginiz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "Karşılaştırma Cetvelleri",
-              body:
-                  "Değerli Kullanıcı,\n\nBartın Üniversitesi Personel Daire Başkanlığı tarafından hazırlanan Karşılaştırma Cetvelleri Modülünde; Kanunlar, Toplu Sözleşmeler, Cumhurbaşkanlığı Kararnameleri, Cunhurbaşkanlığı Kararları, Yönetmelikler, Cumhurbaşkanlığı Genelgeleri, Usuller ve Esasları başlıkları altında karşılaştırma cetvellerini bulabilirsiniz.\n\nSayfamıza katkı vermek amacıyla elinizde bulunan kararları bizimle paylaşabilirsiniz.\n\nDestekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author),
-          InformationCard(
-              title: "Mevzuat Hazırlama",
-              body:
-                  "Değerli Kullanıcı,\n\nSayfamıza katkı vermek amacıyla elinizde bulunan belgeleri bizimle paylaşabilirsiniz. Destekleriniz ve işbirliğiniz için teşekkür ederiz.",
-              author: author)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: TextField(
+                    focusNode: mainPageSearchFocusNode,
+                    decoration: const InputDecoration(
+                      hintText: "Tüm modüller içinde arayın...",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                    ),
+                    controller: mainPageSearchController,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () async {
+                    if (mainPageSearchController.text.isNotEmpty) {
+                      setState(() {
+                        isLoading = true;
+                        mainPageSearchFocusNode.unfocus();
+                      });
+                      var searchModel =
+                          await searchAllData(mainPageSearchController.text);
+                      setState(() {
+                        model = searchModel;
+                        isLoading = false;
+                        mainPageSearchController.clear();
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  SingleChildScrollView mainPageMenuItems(BuildContext contex) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          mainMenuItemButton(
+              context: context,
+              title: "Kararlar Modülü",
+              index: 0,
+              module: CategoryUrls.kararModulu),
+          mainMenuItemButton(
+              context: context,
+              title: 'YÖK Uygulamaları Modülü',
+              index: 1,
+              module: CategoryUrls.yokUygulamalari),
+          mainMenuItemButton(
+              context: context,
+              title: 'DPB Uygulamaları Modülü',
+              index: 2,
+              module: CategoryUrls.dpbUygulamalari),
+          mainMenuItemButton(
+              context: context,
+              title: 'Mali Uygulamalar Modülü',
+              index: 3,
+              module: CategoryUrls.maliUygulamalar),
+          mainMenuItemButton(
+              context: context,
+              title: 'Tamimler Modülü',
+              index: 4,
+              module: CategoryUrls.temimlerModulu),
+          mainMenuItemButton(
+              context: context,
+              title: 'Karşılaştırma Cetvelleri',
+              index: 5,
+              module: CategoryUrls.karsilartirmaCetvelleri),
+          mainMenuItemButton(
+              context: context,
+              title: 'Mevzuat Hazırlama',
+              index: 6,
+              module: CategoryUrls.mevzuatHazirlama),
+          mainMenuWebItemButton(
+              context: context,
+              title: "Mevzuat Bilgi Sistemi",
+              url: 'https://www.mevzuat.gov.tr/'),
+          mainMenuWebItemButton(
+              context: context,
+              title: "Ombudsman Kararları",
+              url: 'https://kararlar.ombudsman.gov.tr/Arama')
+        ],
+      ),
+    );
+  }
+
+  Padding mainMenuItemButton(
+      {required BuildContext context,
+      required String title,
+      required index,
+      required module}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: SizedBox(
+        width: 300,
+        height: 70,
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              appbarTitle = title;
+              textEditingController.clear();
+              selectedValue = null;
+              selectedIndex = index;
+              currentModule = module;
+              model = null;
+              isMainPage = false;
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue,
+            textStyle:
+                const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          child: Text(title),
+        ),
+      ),
+    );
+  }
+
+  Padding mainMenuWebItemButton(
+      {required BuildContext context,
+      required String title,
+      required String url}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: SizedBox(
+        width: 300,
+        height: 70,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WebViewer(url: url)));
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue,
+            textStyle:
+                const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          child: Text(title),
+        ),
       ),
     );
   }
@@ -393,6 +560,7 @@ class _MainLayoutState extends State<MainLayout> {
                             if (searchTextEditingController.text.isNotEmpty) {
                               setState(() {
                                 isLoading = true;
+                                searchFocusNode.unfocus();
                               });
                               var searchModel = await searchData(currentModule,
                                   searchTextEditingController.text);
@@ -400,7 +568,6 @@ class _MainLayoutState extends State<MainLayout> {
                                 this.model = searchModel;
                                 isLoading = false;
                                 searchTextEditingController.clear();
-                                searchFocusNode.unfocus();
                               });
                             }
                           },
@@ -758,6 +925,7 @@ class _MainLayoutState extends State<MainLayout> {
       onTap: () {
         setState(() {
           isMainPage = true;
+          model = null;
         });
         Navigator.pop(context);
       },
