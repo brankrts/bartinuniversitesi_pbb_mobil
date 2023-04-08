@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:io';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
@@ -21,6 +21,12 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
+  final Widget pdf_logo = SizedBox(
+      width: 40, height: 40, child: SvgPicture.asset("assets/images/pdf1.svg"));
+  final Widget doc_logo = SizedBox(
+      width: 40, height: 40, child: SvgPicture.asset("assets/images/doc1.svg"));
+  final Widget web_logo = SizedBox(
+      width: 40, height: 40, child: SvgPicture.asset("assets/images/web1.svg"));
   String appbarTitle = 'Kararlar Modülü';
   int bottomNavigatorBarIndex = 0;
   int selectedIndex = 0;
@@ -109,11 +115,11 @@ class _MainLayoutState extends State<MainLayout> {
 
   List<String> processUrl(String? url) {
     String startValue = "https://form.bartin.edu.tr";
-    List<String> processedUrl = [];
+    List<String> processedUrl = ['null', 'null'];
     String pdf = "pdf";
     String doc = "doc";
     String network = "network";
-    if (url != null) {
+    if (url!.isNotEmpty) {
       if (url.startsWith("/dosyalar/")) {
         url = startValue + url;
       }
@@ -131,6 +137,41 @@ class _MainLayoutState extends State<MainLayout> {
       return processedUrl;
     }
     return processedUrl;
+  }
+
+  void showUrlNotFoundModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 100,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.warning,
+                color: Colors.amber,
+                size: 40.0,
+              ),
+              SizedBox(height: 10.0),
+              Text(
+                "İçerik ile ilişkilendirilmiş URL adresi bulunamadı!",
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -403,17 +444,21 @@ class _MainLayoutState extends State<MainLayout> {
     var processedUrl = processUrl(pdfLink);
     return InkWell(
       onTap: () async {
-        if (processedUrl[1] == "doc" || processedUrl[1] == "docx") {
-          _showSingleDownloadModal(context, processedUrl[0]);
+        if (processedUrl[0] != 'null') {
+          if (processedUrl[1] == "doc" || processedUrl[1] == "docx") {
+            _showSingleDownloadModal(context, processedUrl[0]);
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => processedUrl[1] == "pdf"
+                    ? PdfViewer(
+                        pdfUrl: processedUrl[0],
+                      )
+                    : WebViewer(
+                        url: processedUrl[0],
+                      )));
+          }
         } else {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => processedUrl[1] == "pdf"
-                  ? PdfViewer(
-                      pdfUrl: processedUrl[0],
-                    )
-                  : WebViewer(
-                      url: processedUrl[0],
-                    )));
+          showUrlNotFoundModal();
         }
       },
       onLongPress: () {
@@ -456,11 +501,13 @@ class _MainLayoutState extends State<MainLayout> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(processedUrl[1] == "pdf"
-                          ? Icons.picture_as_pdf_sharp
-                          : (processedUrl[1] == "doc"
-                              ? Icons.edit_document
-                              : Icons.network_locked)),
+                      processedUrl[1] != "null"
+                          ? (processedUrl[1] == "pdf"
+                              ? pdf_logo
+                              : (processedUrl[1] == "doc"
+                                  ? doc_logo
+                                  : web_logo))
+                          : const SizedBox(),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -685,7 +732,7 @@ class _MainLayoutState extends State<MainLayout> {
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(color: Colors.white70),
+        style: const TextStyle(color: Colors.white70),
       ),
       onTap: () {
         setState(() {

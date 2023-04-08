@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           progressIndicatorTheme: const ProgressIndicatorThemeData(
             color: Colors.white,
           )),
-      home: const MainLayout(),
+      home:  const MainLayout(),
       debugShowCheckedModeBanner: false,
     );
   }
