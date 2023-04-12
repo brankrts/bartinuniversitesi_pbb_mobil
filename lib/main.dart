@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pddmobile/main_layout.dart';
-import 'package:pddmobile/screens/download_page.dart';
 
 void main() {
   runApp(const MyApp());

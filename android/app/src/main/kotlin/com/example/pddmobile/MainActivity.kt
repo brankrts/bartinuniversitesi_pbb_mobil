@@ -1,4 +1,4 @@
-package com.example.pddmobile
+package com.pbb_mobil.pddmobile
 
 import io.flutter.embedding.android.FlutterActivity
 
