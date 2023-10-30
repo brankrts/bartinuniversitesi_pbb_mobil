@@ -7,16 +7,15 @@ class BaseModel {
     if (json['raporverileri'] != null) {
       raporverileri = <Raporverileri>[];
       json['raporverileri'].forEach((v) {
-        raporverileri!.add(new Raporverileri.fromJson(v));
+        raporverileri!.add(Raporverileri.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.raporverileri != null) {
-      data['raporverileri'] =
-          this.raporverileri!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (raporverileri != null) {
+      data['raporverileri'] = raporverileri!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -42,49 +41,48 @@ class Raporverileri {
 
   Raporverileri.fromJson(Map<String, dynamic> json) {
     kararanabaslik = json['kararanabaslik'] != null
-        ? new Kararanabaslik.fromJson(json['kararanabaslik'])
+        ? Kararanabaslik.fromJson(json['kararanabaslik'])
         : null;
     kararbaslik = json['kararbaslik'] != null
-        ? new Kararbaslik.fromJson(json['kararbaslik'])
+        ? Kararbaslik.fromJson(json['kararbaslik'])
         : null;
     karartarih = json['karartarih'] != null
-        ? new Karartarih.fromJson(json['karartarih'])
+        ? Karartarih.fromJson(json['karartarih'])
         : null;
-    kararno = json['kararno'] != null
-        ? new Karartarih.fromJson(json['kararno'])
-        : null;
+    kararno =
+        json['kararno'] != null ? Karartarih.fromJson(json['kararno']) : null;
     esasno =
-        json['esasno'] != null ? new Karartarih.fromJson(json['esasno']) : null;
+        json['esasno'] != null ? Karartarih.fromJson(json['esasno']) : null;
     karardosyayolu = json['karardosyayolu'] != null
-        ? new Karartarih.fromJson(json['karardosyayolu'])
+        ? Karartarih.fromJson(json['karardosyayolu'])
         : null;
     karardosya = json['karardosya'] != null
-        ? new Karardosya.fromJson(json['karardosya'])
+        ? Karardosya.fromJson(json['karardosya'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.kararanabaslik != null) {
-      data['kararanabaslik'] = this.kararanabaslik!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (kararanabaslik != null) {
+      data['kararanabaslik'] = kararanabaslik!.toJson();
     }
-    if (this.kararbaslik != null) {
-      data['kararbaslik'] = this.kararbaslik!.toJson();
+    if (kararbaslik != null) {
+      data['kararbaslik'] = kararbaslik!.toJson();
     }
-    if (this.karartarih != null) {
-      data['karartarih'] = this.karartarih!.toJson();
+    if (karartarih != null) {
+      data['karartarih'] = karartarih!.toJson();
     }
-    if (this.kararno != null) {
-      data['kararno'] = this.kararno!.toJson();
+    if (kararno != null) {
+      data['kararno'] = kararno!.toJson();
     }
-    if (this.esasno != null) {
-      data['esasno'] = this.esasno!.toJson();
+    if (esasno != null) {
+      data['esasno'] = esasno!.toJson();
     }
-    if (this.karardosyayolu != null) {
-      data['karardosyayolu'] = this.karardosyayolu!.toJson();
+    if (karardosyayolu != null) {
+      data['karardosyayolu'] = karardosyayolu!.toJson();
     }
-    if (this.karardosya != null) {
-      data['karardosya'] = this.karardosya!.toJson();
+    if (karardosya != null) {
+      data['karardosya'] = karardosya!.toJson();
     }
     return data;
   }
@@ -104,10 +102,10 @@ class Kararanabaslik {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['veri'] = this.veri;
-    data['deger'] = this.deger;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['label'] = label;
+    data['veri'] = veri;
+    data['deger'] = deger;
     return data;
   }
 }
@@ -126,10 +124,10 @@ class Kararbaslik {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['listedegoster'] = this.listedegoster;
-    data['veri'] = this.veri;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['label'] = label;
+    data['listedegoster'] = listedegoster;
+    data['veri'] = veri;
     return data;
   }
 }
@@ -146,9 +144,9 @@ class Karartarih {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['veri'] = this.veri;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['label'] = label;
+    data['veri'] = veri;
     return data;
   }
 }
@@ -173,10 +171,10 @@ class Karardosya {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['veri'] = this.veri;
-    data['url'] = this.url;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['label'] = label;
+    data['veri'] = veri;
+    data['url'] = url;
     return data;
   }
 }

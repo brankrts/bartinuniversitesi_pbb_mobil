@@ -4,23 +4,34 @@ import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:pddmobile/models/base_model.dart';
 import 'package:pddmobile/models/constants.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:pddmobile/screens/download_page.dart';
+import 'package:pddmobile/screens/notification.dart';
 import 'package:pddmobile/screens/pdf_viewer.dart';
 import 'package:pddmobile/screens/web_viewer.dart';
+import 'package:pddmobile/services/cache_service.dart';
 import 'package:pddmobile/services/network_manager.dart';
+import 'package:pddmobile/state/notificationState.dart';
+import 'package:provider/provider.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+  final List<Map<String, dynamic>>? notificationCache;
+  const MainLayout({super.key, this.notificationCache});
 
   @override
-  State<MainLayout> createState() => _MainLayoutState();
+  State<MainLayout> createState() =>
+      // ignore: no_logic_in_create_state
+      _MainLayoutState(notificationCache: notificationCache);
 }
 
 class _MainLayoutState extends State<MainLayout> {
+  final List<Map<String, dynamic>>? notificationCache;
+
+  _MainLayoutState({this.notificationCache});
+
+  bool isNotificationChecked = false;
   final Widget pdf_logo = SizedBox(
       width: 40, height: 40, child: SvgPicture.asset("assets/images/pdf1.svg"));
   final Widget doc_logo = SizedBox(
@@ -35,8 +46,10 @@ class _MainLayoutState extends State<MainLayout> {
   String? searchText;
   String currentModule = CategoryUrls.kararModulu;
   bool _isFocused = false;
+  // ignore: unused_field
   bool _isSearchFocused = false;
   bool isMainPage = true;
+  int _currentTabIndex = 0;
 
   bool isDownloading = false;
   File? file;
@@ -66,6 +79,17 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (notificationCache != null) {
+        for (var notification in notificationCache!) {
+          notification['notification']['element'] =
+              Raporverileri.fromJson(notification['notification']['element']);
+        }
+        Provider.of<NotificationState>(context, listen: false)
+            .setNotifications(notificationCache!);
+      }
+    });
+
     super.initState();
     _focusNode.addListener(_onFocusChange);
     searchFocusNode.addListener(_onSearchFocusChange);
@@ -91,7 +115,7 @@ class _MainLayoutState extends State<MainLayout> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height * 0.4,
           width: MediaQuery.of(context).size.height * 0.4,
           child: SingleDownloadScreen(url: url),
@@ -164,9 +188,9 @@ class _MainLayoutState extends State<MainLayout> {
               topRight: Radius.circular(16.0),
             ),
           ),
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Icon(
                 Icons.warning,
                 color: Colors.amber,
@@ -187,24 +211,79 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
+  Widget isMainPageOrBody(BuildContext context) {
+    Widget result = isMainPage ? BuildMainPage(context) : BuildBody(context);
+    return result;
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentTabIndex = index;
+    });
+    if (_currentTabIndex == 1) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     double generalSearchWidth = MediaQuery.of(context).size.width * 0.35;
+    final List<Widget> tabList = [
+      isMainPageOrBody(context),
+      const Bildirimler()
+    ];
+
     return Scaffold(
-      appBar: BuildAppbar(context, generalSearchWidth),
-      //body: BuildBody(context),
-      body: isMainPage ? BuildMainPage(context) : BuildBody(context),
-      drawer: DrawerManu(context),
+      appBar: _currentTabIndex == 0
+          ? BuildAppbar(context, generalSearchWidth)
+          : AppBar(
+              title: const Text("Bildirimler"),
+            ),
+      body: tabList[_currentTabIndex],
+      drawer: _currentTabIndex == 0 ? DrawerManu(context) : null,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentTabIndex,
+        items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Anasayfa',
+          ),
+          BottomNavigationBarItem(
+            icon: notificationTabItem(context),
+            label: 'Bildirimler',
+          )
+        ],
+      ),
     );
   }
 
+  Stack notificationTabItem(BuildContext context) {
+    return Stack(children: <Widget>[
+      const Icon(Icons.notifications),
+      Positioned(
+        right: 0,
+        top: 0,
+        child: Visibility(
+          visible:
+              Provider.of<NotificationState>(context).isThereNewNotification,
+          child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              )),
+        ),
+      )
+    ]);
+  }
+
   AppBar BuildAppbar(BuildContext context, double generalSearchWidth) {
+    final notificationState = Provider.of<NotificationState>(context);
     return AppBar(
       title: Text(isMainPage ? "PERSONEL BİLGİ BANKASI" : appbarTitle),
       actions: [
         Visibility(
           visible: !isMainPage,
-          child: Container(
+          child: SizedBox(
             width: _isFocused
                 ? MediaQuery.of(context).size.width * 0.7
                 : generalSearchWidth,
@@ -227,6 +306,11 @@ class _MainLayoutState extends State<MainLayout> {
                         });
                         var searchModel = await searchAllData(
                             generalSearchEditingController.text);
+                        if (searchModel != null) {
+                          List<Map<String, dynamic>> notifications =
+                              notificationChecker(searchModel);
+                          notificationState.setNotifications(notifications);
+                        }
                         setState(() {
                           model = searchModel;
                           isLoading = false;
@@ -268,7 +352,7 @@ class _MainLayoutState extends State<MainLayout> {
       child: Column(children: [
         Image.asset('assets/images/logo.jpg'),
         mainPageMenuItems(context),
-        mainPageSearchBar(),
+        mainPageSearchBar(context),
         isLoading
             ? const CircularProgressIndicator()
             : model?.raporverileri?.isNotEmpty == true
@@ -277,7 +361,7 @@ class _MainLayoutState extends State<MainLayout> {
                     shrinkWrap: true,
                     itemCount: model?.raporverileri?.length ?? 0,
                     itemBuilder: (BuildContext context, int i) {
-                      return Container(
+                      return SizedBox(
                         height: MediaQuery.of(context).size.height * 0.3,
                         child: CustomCard(
                             header:
@@ -289,12 +373,13 @@ class _MainLayoutState extends State<MainLayout> {
                             date: model?.raporverileri![i].karartarih?.veri),
                       );
                     }))
-                : Text("Gosterilecek kayit bulunamadi"),
+                : const Text("Gosterilecek kayit bulunamadi"),
       ]),
     );
   }
 
-  SizedBox mainPageSearchBar() {
+  SizedBox mainPageSearchBar(BuildContext context) {
+    final notificationState = Provider.of<NotificationState>(context);
     return SizedBox(
       width: double.infinity,
       height: kToolbarHeight * 2,
@@ -334,6 +419,13 @@ class _MainLayoutState extends State<MainLayout> {
                       });
                       var searchModel =
                           await searchAllData(mainPageSearchController.text);
+                      if (searchModel != null) {
+                        List<Map<String, dynamic>> notifications =
+                            notificationChecker(searchModel);
+                        notificationState.setNotifications(notifications);
+                        //CacheService().cacheIfNotCache(notifications);
+                      }
+
                       setState(() {
                         model = searchModel;
                         isLoading = false;
@@ -414,7 +506,7 @@ class _MainLayoutState extends State<MainLayout> {
         width: 300,
         height: 70,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             setState(() {
               appbarTitle = title;
               textEditingController.clear();
@@ -531,6 +623,7 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   Column DataList({required BaseModel? model}) {
+    final notificationState = Provider.of<NotificationState>(context);
     return Column(
       children: [
         Padding(
@@ -564,6 +657,13 @@ class _MainLayoutState extends State<MainLayout> {
                               });
                               var searchModel = await searchData(currentModule,
                                   searchTextEditingController.text);
+                              if (searchModel != null) {
+                                List<Map<String, dynamic>> notifications =
+                                    notificationChecker(searchModel);
+                                notificationState
+                                    .setNotifications(notifications);
+                                //CacheService().cacheIfNotCache(notifications);
+                              }
                               setState(() {
                                 this.model = searchModel;
                                 isLoading = false;
@@ -588,7 +688,7 @@ class _MainLayoutState extends State<MainLayout> {
                 shrinkWrap: true,
                 itemCount: model.raporverileri?.length ?? 0,
                 itemBuilder: (BuildContext context, int i) {
-                  return Container(
+                  return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.3,
                     child: CustomCard(
                         header: model.raporverileri![i].kararanabaslik?.veri,
@@ -634,7 +734,7 @@ class _MainLayoutState extends State<MainLayout> {
           SnackBar(content: Text("URL kopyalandı: ${processedUrl[0]}")),
         );
       },
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: 100,
         child: Card(
@@ -707,6 +807,7 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   Padding DropDownMenu(BuildContext context) {
+    final notificationState = Provider.of<NotificationState>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: DropdownButtonHideUnderline(
@@ -740,7 +841,12 @@ class _MainLayoutState extends State<MainLayout> {
                 findIndex(value) >= 20) {
               index += 1;
             }
+
             var model = await fetchData(currentModule, index.toString());
+            List<Map<String, dynamic>> notifications =
+                notificationChecker(model);
+            notificationState.setNotifications(notifications);
+            //CacheService().cacheIfNotCache(notifications);
 
             setState(() {
               selectedValue = value as String;
@@ -901,7 +1007,7 @@ class _MainLayoutState extends State<MainLayout> {
         title,
         style: const TextStyle(color: Colors.white70),
       ),
-      onTap: () {
+      onTap: () async {
         setState(() {
           appbarTitle = title;
           textEditingController.clear();
