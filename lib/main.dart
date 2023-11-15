@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:pddmobile/main_layout.dart';
-import 'package:pddmobile/services/cache_service.dart';
 import 'package:pddmobile/state/notificationState.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final List<Map<String, dynamic>>? notificationCache =
-      await CacheService().getCacheData();
-
   runApp(ChangeNotifierProvider(
     create: (context) => NotificationState(),
-    child: MyApp(notificationCache: notificationCache),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final List<Map<String, dynamic>>? notificationCache;
-  const MyApp({super.key, this.notificationCache});
+  const MyApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +28,7 @@ class MyApp extends StatelessWidget {
           progressIndicatorTheme: const ProgressIndicatorThemeData(
             color: Colors.white,
           )),
-      home: MainLayout(notificationCache: notificationCache),
+      home: const MainLayout(),
       debugShowCheckedModeBanner: false,
     );
   }

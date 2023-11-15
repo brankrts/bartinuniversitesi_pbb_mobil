@@ -4,32 +4,33 @@ import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:pddmobile/models/base_model.dart';
 import 'package:pddmobile/models/constants.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:pddmobile/models/notification_cache_model.dart';
+import 'package:pddmobile/models/notification_model.dart';
 import 'package:pddmobile/screens/download_page.dart';
 import 'package:pddmobile/screens/notification.dart';
 import 'package:pddmobile/screens/pdf_viewer.dart';
 import 'package:pddmobile/screens/web_viewer.dart';
-import 'package:pddmobile/services/cache_service.dart';
+import 'package:pddmobile/services/hive_manager.dart';
 import 'package:pddmobile/services/network_manager.dart';
 import 'package:pddmobile/state/notificationState.dart';
 import 'package:provider/provider.dart';
 
 class MainLayout extends StatefulWidget {
-  final List<Map<String, dynamic>>? notificationCache;
-  const MainLayout({super.key, this.notificationCache});
+  const MainLayout({super.key});
 
   @override
   State<MainLayout> createState() =>
       // ignore: no_logic_in_create_state
-      _MainLayoutState(notificationCache: notificationCache);
+      _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  final List<Map<String, dynamic>>? notificationCache;
-
-  _MainLayoutState({this.notificationCache});
+  late List<NotificationCacheModel>? notificationCache;
+  final HiveCacheManager cacheManager = HiveCacheManager.getInstance();
 
   bool isNotificationChecked = false;
   final Widget pdf_logo = SizedBox(
@@ -79,21 +80,31 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (notificationCache != null) {
-        for (var notification in notificationCache!) {
-          notification['notification']['element'] =
-              Raporverileri.fromJson(notification['notification']['element']);
-        }
-        Provider.of<NotificationState>(context, listen: false)
-            .setNotifications(notificationCache!);
-      }
-    });
-
     super.initState();
+    initHive();
     _focusNode.addListener(_onFocusChange);
     searchFocusNode.addListener(_onSearchFocusChange);
     mainPageSearchFocusNode.addListener(_onMainPageSearchFocusChange);
+  }
+
+  Future<void> initHive() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(NotificationCacheModelAdapter());
+    Hive.registerAdapter(NotificationModelAdapter());
+    Hive.registerAdapter(RaporverileriAdapter());
+    Hive.registerAdapter(KararanabaslikAdapter());
+    Hive.registerAdapter(KararbaslikAdapter());
+    Hive.registerAdapter(KarardosyaAdapter());
+    Hive.registerAdapter(KarartarihAdapter());
+    await cacheManager.init();
+    // await cacheManager.clearAll();
+    notificationCache = cacheManager.getNotifications();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (notificationCache != null) {
+        Provider.of<NotificationState>(context, listen: false)
+            .setNotifications(notificationCache!, isCache: true);
+      }
+    });
   }
 
   @override
@@ -307,7 +318,7 @@ class _MainLayoutState extends State<MainLayout> {
                         var searchModel = await searchAllData(
                             generalSearchEditingController.text);
                         if (searchModel != null) {
-                          List<Map<String, dynamic>> notifications =
+                          List<NotificationCacheModel> notifications =
                               notificationChecker(searchModel);
                           notificationState.setNotifications(notifications);
                         }
@@ -420,10 +431,9 @@ class _MainLayoutState extends State<MainLayout> {
                       var searchModel =
                           await searchAllData(mainPageSearchController.text);
                       if (searchModel != null) {
-                        List<Map<String, dynamic>> notifications =
+                        List<NotificationCacheModel> notifications =
                             notificationChecker(searchModel);
                         notificationState.setNotifications(notifications);
-                        //CacheService().cacheIfNotCache(notifications);
                       }
 
                       setState(() {
@@ -658,11 +668,10 @@ class _MainLayoutState extends State<MainLayout> {
                               var searchModel = await searchData(currentModule,
                                   searchTextEditingController.text);
                               if (searchModel != null) {
-                                List<Map<String, dynamic>> notifications =
+                                List<NotificationCacheModel> notifications =
                                     notificationChecker(searchModel);
                                 notificationState
                                     .setNotifications(notifications);
-                                //CacheService().cacheIfNotCache(notifications);
                               }
                               setState(() {
                                 this.model = searchModel;
@@ -843,10 +852,9 @@ class _MainLayoutState extends State<MainLayout> {
             }
 
             var model = await fetchData(currentModule, index.toString());
-            List<Map<String, dynamic>> notifications =
+            List<NotificationCacheModel> notifications =
                 notificationChecker(model);
             notificationState.setNotifications(notifications);
-            //CacheService().cacheIfNotCache(notifications);
 
             setState(() {
               selectedValue = value as String;

@@ -1,14 +1,30 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:intl/intl.dart';
 import 'package:pddmobile/config/config.dart';
+import 'package:pddmobile/models/notification_cache_model.dart';
+import 'package:pddmobile/models/notification_model.dart';
 
 import '../models/base_model.dart';
 
-final dio = Dio();
+var dio = Dio();
+void initAdapter(Dio dio) {
+  dio.httpClientAdapter = IOHttpClientAdapter(
+    createHttpClient: () {
+      final client = HttpClient();
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
+      };
+      return client;
+    },
+  );
+}
 
 String baseUrl = "https://form.bartin.edu.tr/rapor/personel/";
 String jsonAdded = "&json=1";
@@ -24,19 +40,12 @@ List<String> modules = [
   CategoryUrls.yokUygulamalari
 ];
 
-// Map<String, int> requestCount = {
-//   "kararlar": 6,
-//   "yok-uygulamalari": 27,
-//   "dpb-uygulamalari": 53,
-//   "mali-uygulamalar": 4,
-//   "tamimler": 13,
-//   "karsilastirma-cetvelleri": 7,
-//   "mevzuat-hazirlama": 1
-// };
 Future<BaseModel> fetchData(String? module, String? index) async {
+  initAdapter(dio);
   if (index != null && module != null) {
     final response =
         await dio.get(baseUrl + module + urlPart2 + index + jsonAdded);
+
     var model = BaseModel.fromJson(response.data);
     return model;
   }
@@ -51,21 +60,21 @@ String generateUuid(String payload) {
   return digest.toString();
 }
 
-List<Map<String, dynamic>> notificationChecker(BaseModel model) {
-  List<Map<String, dynamic>> notifications = [];
-  List<String> states = [ApplicationConfig.addKey, ApplicationConfig.updateKey];
+List<NotificationCacheModel> notificationChecker(BaseModel model) {
+  List<NotificationCacheModel> notifications = [];
+  // List<String> states = [ApplicationConfig.addKey, ApplicationConfig.updateKey];
 
-// fake notifications
-  for (int i = 0; i < 5; i++) {
-    if (model.raporverileri!.length < 10) break;
-    int randomValue = Random().nextInt(model.raporverileri!.length);
-    String? description = model.raporverileri![randomValue].kararbaslik!.veri;
-    if (description != null) {
-      String state = states[Random().nextInt(2)];
-      description = description + state;
-      model.raporverileri![randomValue].kararbaslik!.veri = description;
-    }
-  }
+  //TODO: remove the  implemented dummy notification datas
+  // for (int i = 0; i < 5; i++) {
+  //   if (model.raporverileri!.length < 10) break;
+  //   int randomValue = Random().nextInt(model.raporverileri!.length);
+  //   String? description = model.raporverileri![randomValue].kararbaslik!.veri;
+  //   if (description != null) {
+  //     String state = states[Random().nextInt(2)];
+  //     description = description + state;
+  //     model.raporverileri![randomValue].kararbaslik!.veri = description;
+  //   }
+  // }
   for (var element in model.raporverileri!) {
     var description = element.kararbaslik?.veri;
     var date = element.karartarih?.veri;
@@ -73,45 +82,22 @@ List<Map<String, dynamic>> notificationChecker(BaseModel model) {
     if (description is String) {
       String formattedDateNow = DateFormat("dd/MM/yyy").format(DateTime.now());
       String payload = "$title-$description-$date";
-      if (description.endsWith(ApplicationConfig.addKey)) {
-        notifications.add(date == null
-            ? {
-                "uuid": generateUuid(payload),
-                "notification": {
-                  "element": element,
-                  "state": "ADDED",
-                  "date": formattedDateNow,
-                  "isRead": false
-                }
-              }
-            : {
-                "uuid": generateUuid(payload),
-                "notification": {
-                  "element": element,
-                  "state": "ADDED",
-                  "isRead": false
-                }
-              });
-      }
-      if (description.endsWith(ApplicationConfig.updateKey)) {
-        notifications.add(date == null
-            ? {
-                "uuid": generateUuid(payload),
-                "notification": {
-                  "element": element,
-                  "state": "UPDATED",
-                  "date": formattedDateNow,
-                  "isRead": false
-                }
-              }
-            : {
-                "uuid": generateUuid(payload),
-                "notification": {
-                  "element": element,
-                  "state": "UPDATED",
-                  "isRead": false
-                }
-              });
+      String state = description.endsWith(ApplicationConfig.addKey) |
+              description.endsWith(ApplicationConfig.updateKey)
+          ? (description.endsWith(ApplicationConfig.addKey)
+              ? "ADDED"
+              : "UPDATED")
+          : "NOT";
+
+      String updatedDate = date ?? formattedDateNow;
+      if (state != "NOT") {
+        notifications.add(NotificationCacheModel(
+            uuid: generateUuid(payload),
+            notification: NotificationModel(
+                date: updatedDate,
+                element: element,
+                isRead: false,
+                state: state)));
       }
     }
   }
@@ -119,6 +105,7 @@ List<Map<String, dynamic>> notificationChecker(BaseModel model) {
 }
 
 Future<BaseModel?> searchData(String module, String search) async {
+  initAdapter(dio);
   final response =
       await dio.get(baseUrl + module + urlSearchPart2 + search + jsonAdded);
   if (response.data["raporverileri"].isNotEmpty) {
@@ -129,6 +116,7 @@ Future<BaseModel?> searchData(String module, String search) async {
 }
 
 Future<dynamic> searchWithResponse(String module, String search) async {
+  initAdapter(dio);
   final response =
       await dio.get(baseUrl + module + urlSearchPart2 + search + jsonAdded);
 

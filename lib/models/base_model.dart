@@ -1,4 +1,9 @@
+import 'package:hive_flutter/adapters.dart';
+part 'base_model.g.dart';
+
+@HiveType(typeId: 2)
 class BaseModel {
+  @HiveField(0)
   List<Raporverileri>? raporverileri;
 
   BaseModel({this.raporverileri});
@@ -21,13 +26,27 @@ class BaseModel {
   }
 }
 
+@HiveType(typeId: 3)
 class Raporverileri {
+  @HiveField(0)
   Kararanabaslik? kararanabaslik;
+
+  @HiveField(1)
   Kararbaslik? kararbaslik;
+
+  @HiveField(2)
   Karartarih? karartarih;
+
+  @HiveField(3)
   Karartarih? kararno;
+
+  @HiveField(4)
   Karartarih? esasno;
+
+  @HiveField(5)
   Karartarih? karardosyayolu;
+
+  @HiveField(6)
   Karardosya? karardosya;
 
   Raporverileri(
@@ -88,9 +107,15 @@ class Raporverileri {
   }
 }
 
+@HiveType(typeId: 4)
 class Kararanabaslik {
+  @HiveField(0)
   String? label;
+
+  @HiveField(1)
   String? veri;
+
+  @HiveField(2)
   String? deger;
 
   Kararanabaslik({this.label, this.veri, this.deger});
@@ -110,9 +135,15 @@ class Kararanabaslik {
   }
 }
 
+@HiveType(typeId: 5)
 class Kararbaslik {
+  @HiveField(0)
   String? label;
+
+  @HiveField(1)
   bool? listedegoster;
+
+  @HiveField(2)
   String? veri;
 
   Kararbaslik({this.label, this.listedegoster, this.veri});
@@ -132,8 +163,12 @@ class Kararbaslik {
   }
 }
 
+@HiveType(typeId: 6)
 class Karartarih {
+  @HiveField(0)
   String? label;
+
+  @HiveField(1)
   String? veri;
 
   Karartarih({this.label, this.veri});
@@ -151,9 +186,15 @@ class Karartarih {
   }
 }
 
+@HiveType(typeId: 7)
 class Karardosya {
+  @HiveField(0)
   String? label;
+
+  @HiveField(1)
   String? veri;
+
+  @HiveField(2)
   int? url;
 
   Karardosya({this.label, this.veri, this.url});
